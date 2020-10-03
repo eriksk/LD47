@@ -10,13 +10,18 @@ namespace LD47
         public readonly SpriteBatch SpriteBatch;
         public readonly ContentManager Content;
         public readonly Texture2D Pixel;
+        public readonly SpriteFont Font;
 
-        public ResourceContext(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, ContentManager content)
+        public ResourceContext(
+            GraphicsDevice graphicsDevice, 
+            SpriteBatch spriteBatch, 
+            ContentManager content,
+            SpriteFont font)
         {
             GraphicsDevice = graphicsDevice;
             SpriteBatch = spriteBatch;
             Content = content;
-
+            Font = font;
             Pixel = new Texture2D(graphicsDevice, 1, 1);
             Pixel.SetData(new[] { Color.White });
         }

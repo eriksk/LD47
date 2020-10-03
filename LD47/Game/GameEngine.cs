@@ -14,7 +14,10 @@ namespace LD47.Game
         private CharacterInput _inputState;
         private Character _playerCharacter;
         private Dictionary<int, CharacterFrameRecorder> _recorders;
-        private readonly int IterationTimeInframes = 60 * 5; // 5 sec
+        public readonly int IterationTimeInframes = 60 * 5; // 5 sec
+
+        public List<Character> Characters => _characters;
+        public GameTimer Timer => _timer;
 
         public GameEngine()
         {
@@ -22,8 +25,6 @@ namespace LD47.Game
             _characters = new List<Character>();
             _timer = new GameTimer();
         }
-
-        public List<Character> Characters => _characters;
 
         public void Start()
         {
@@ -75,13 +76,19 @@ namespace LD47.Game
 
         private void Step(int frame)
         {
+            if(_playerCharacter.Dead)
+            {
+                // TODO: Game over
+
+            }
             _playerCharacter.Update(_timer.DeltaTime, _inputState);
             RecordFrame(_playerCharacter, _inputState, frame);
 
             foreach (var character in _characters)
             {
                 if(character == _playerCharacter) continue;
-                
+                if(character.Dead) continue;
+
                 var recorder = GetOrCreateRecorder(character);
                 var input = recorder.GetFrameInput(frame);
                 character.Update(_timer.DeltaTime, CharacterInput.FromInt(input));

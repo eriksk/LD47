@@ -10,19 +10,39 @@ namespace LD47.Game.Characters
         public Vector2 Position;
         public Vector2 Velocity;
         public Color Color = Color.Black;
+        public bool Alive;
+
+        public bool Dead => !Alive;
+
+        private const int Width = 4;
+        private const int Height = 12;
+
+        public Rectangle BoundingBox =>
+             new Rectangle(
+                    (int)(Position.X - (Width / 2)),
+                    (int)(Position.Y - Height),
+                    Width,
+                    Height
+                );
 
         public void Reset(Vector2 startPosition)
         {
             Position = startPosition;
             Velocity = Vector2.Zero;
+            Alive = true;
+        }
+
+        public void Die()
+        {
+            Alive = false;
         }
 
         public void Update(float dt, CharacterInput input)
         {
-            const float acceleration = 800f;
-            const float movementDamping = 0.1f;
-            const float jumpForce = 128f;
-            const float gravity = 256f;
+            const float acceleration = 1600f;
+            const float movementDamping = 0.2f;
+            const float jumpForce = 256f;
+            const float gravity = 800f;
 
             var movement = new Vector2();
 
@@ -50,7 +70,7 @@ namespace LD47.Game.Characters
 
             Position += Velocity * dt;
 
-            if(Position.Y >= 512f)
+            if (Position.Y >= 512f)
             {
                 Position.Y = 512f;
             }
@@ -58,21 +78,37 @@ namespace LD47.Game.Characters
 
         public void Draw(SpriteBatch spriteBatch, Texture2D pixel)
         {
-            int width = 4;
-            int height = 8;
+            var halfWidth = Width / 2;
 
-            var halfWidth = width / 2;
-            var halfHeight = height / 2;
+            // Full size
+            spriteBatch.Draw(
+                pixel,
+                BoundingBox,
+                new Color(31, 100, 136, 255)
+            );
 
+            // Shirt
             spriteBatch.Draw(
                 pixel,
                 new Rectangle(
                     (int)(Position.X - halfWidth),
-                    (int)(Position.Y - height),
-                    width,
-                    height
+                    (int)(Position.Y - Height),
+                    Width,
+                    8
                 ),
-                Color
+                new Color(126, 177, 56, 255)
+            );
+
+            // Head
+            spriteBatch.Draw(
+                pixel,
+                new Rectangle(
+                    (int)(Position.X - halfWidth),
+                    (int)(Position.Y - Height),
+                    Width,
+                    3
+                ),
+                new Color(210, 159, 113, 255)
             );
         }
     }

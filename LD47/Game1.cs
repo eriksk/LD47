@@ -31,7 +31,7 @@ namespace LD47
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _resources = new ResourceContext(GraphicsDevice, _spriteBatch, Content);
+            _resources = new ResourceContext(GraphicsDevice, _spriteBatch, Content, Content.Load<SpriteFont>("Fonts/font"));
 
             LoadScene(new GameScene(this, _resources));
         }
