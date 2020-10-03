@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using LD47.Animations;
 using Microsoft.Xna.Framework;
@@ -19,14 +20,15 @@ namespace LD47.Game.Characters
 
         public bool Dead => !Alive;
 
-        private const int Width = 4;
-        private const int Height = 12;
+        private const int Width = 32;
+        private const int Height = 32;
         private float _attackCooldown;
 
         private Dictionary<string, Animation> _animations;
         private string _currentAnimation;
 
         public int CurrentAnimationSourceIndex => _animations[_currentAnimation].ActiveFrameIndex;
+        private bool _airborne;
 
         public Rectangle BoundingBox =>
              new Rectangle(
@@ -35,6 +37,33 @@ namespace LD47.Game.Characters
                     Width,
                     Height
                 );
+
+        public Rectangle Hitbox =>
+             new Rectangle(
+                    (int)(Position.X - (Width / 2)) + (Flipped ? -16 : 16),
+                    (int)(Position.Y - Height),
+                    Width,
+                    Height
+                );
+
+        public Rectangle JumpHitbox =>
+             new Rectangle(
+                    (int)(Position.X - (Width / 2)),
+                    (int)(Position.Y),
+                    Width,
+                    Height / 2
+                );
+
+        public bool Attacking => _attackCooldown > 0f;
+        public bool JumpAttacking => _airborne && Velocity.Y > 0f; // falling down
+        public bool Airborne => _airborne;
+        public bool Grounded => !_airborne;
+
+        const float acceleration = 2600f;
+        const float movementDamping = 0.2f;
+        const float jumpForce = 500f;
+        const float gravity = 1200f;
+        const float ground = 512f;
 
         public Character(Vector2 initialPosition)
         {
@@ -78,23 +107,24 @@ namespace LD47.Game.Characters
             Alive = false;
         }
 
+        public void Bounce()
+        {
+            Velocity.Y = -jumpForce * 0.5f;
+        }
+
         public void Update(float dt, CharacterInput input)
         {
-            const float acceleration = 2600f;
-            const float movementDamping = 0.2f;
-            const float jumpForce = 500f;
-            const float gravity = 1200f;
-            const float ground = 512f;
+            if (Dead) return;
 
-            var airborne = Position.Y < ground - 1;
+            _airborne = Position.Y < ground - 1;
 
             var movement = new Vector2();
 
-            if(_attackCooldown > 0f)
+            if (_attackCooldown > 0f)
             {
                 _attackCooldown -= dt;
             }
-            else if (!airborne && input.Shoot)
+            else if (!_airborne && input.Shoot)
             {
                 _attackCooldown = GetAnimationDuration("attack");
                 SetAnimation("attack");
@@ -124,7 +154,7 @@ namespace LD47.Game.Characters
                     SetAnimation("idle");
                 }
 
-                if (airborne)
+                if (_airborne)
                 {
                     if (Velocity.Y < 0f)
                     {
@@ -155,24 +185,16 @@ namespace LD47.Game.Characters
 
             const float borderMargin = 32f;
 
-            if(Position.X < -borderMargin)
+            if (Position.X < -borderMargin)
             {
                 Position.X = 512f + borderMargin;
             }
-            if(Position.X > 512f + borderMargin)
+            if (Position.X > 512f + borderMargin)
             {
                 Position.X = -borderMargin;
             }
 
             _animations[_currentAnimation].Update(dt);
-        }
-
-        private Color Darken(Color color)
-        {
-            color.R = (byte)(color.R / 2);
-            color.G = (byte)(color.G / 2);
-            color.B = (byte)(color.B / 2);
-            return color;
         }
     }
 }

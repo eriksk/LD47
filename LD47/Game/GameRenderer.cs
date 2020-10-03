@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -9,6 +10,8 @@ namespace LD47.Game
         private readonly GameEngine _engine;
         private readonly Texture2D _characterTexture;
         private readonly Texture2D _iconsTexture;
+        public bool DrawDebug = true;
+        private float _totalTime;
 
         public GameRenderer(ResourceContext resources, GameEngine engine)
         {
@@ -18,11 +21,25 @@ namespace LD47.Game
             _iconsTexture = resources.Content.Load<Texture2D>("Gfx/icons");
         }
 
+        public void Update(GameTime time)
+        {
+            _totalTime += (float)time.ElapsedGameTime.TotalSeconds;
+        }
+
         public void Draw()
         {
             var sb = _resources.SpriteBatch;
 
             sb.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp);
+
+            if(DrawDebug)
+            {
+                foreach(var platform in _engine.Stage.Platforms)
+                {
+                    DrawRectOutline(platform, 1, Color.Orange);
+                }
+            }
+
             foreach (var character in _engine.Characters)
             {
                 if (character.Dead) continue; // TODO: or draw them as dead or something
@@ -45,12 +62,25 @@ namespace LD47.Game
                     new Vector2(cellSize * 0.5f, cellSize),
                     Vector2.One * 4f,
                     character.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
+
+                if (DrawDebug)
+                {
+                    DrawRectOutline(character.BoundingBox, 1f, Color.Green);
+                    if (character.Attacking)
+                    {
+                        DrawRectOutline(character.Hitbox, 1f, Color.Red);
+                    }
+                    if(character.JumpAttacking)
+                    {
+                        DrawRectOutline(character.JumpHitbox, 1f, Color.Red);
+                    }
+                }
             }
 
             var arrowSourceRectangle = new Rectangle(0, 0, 32, 32);
             sb.Draw(
                 _iconsTexture,
-                _engine.Player.Position + new Vector2(0f, -80f),
+                _engine.Player.Position + new Vector2(0f, -80f + (MathF.Sin(_totalTime*10f) * 4f)),
                 arrowSourceRectangle,
                 Color.White,
                 0f,
@@ -88,15 +118,19 @@ namespace LD47.Game
                 progressBarRectangle,
                 Color.Red);
 
-            var timePercentage = (int)(progress * 100f);
-            var timeString = $"{timePercentage}%";
-
             DrawStringCentered(
-                timeString,
-                new Vector2(512f * 0.5f, 38f),
+                "iteration",
+                new Vector2(512f * 0.5f, 64f),
                 Color.Gray,
                 0f,
                 0.5f);
+                
+            DrawStringCentered(
+                _engine.Iteration.ToString(),
+                new Vector2(512f * 0.5f, 128f),
+                Color.Black,
+                0f,
+                1f);
 
             sb.End();
         }
@@ -113,7 +147,64 @@ namespace LD47.Game
                 origin,
                 Vector2.One * scale,
                 SpriteEffects.None, 0f);
+        }
 
+
+        private void DrawLine(Vector2 a, Vector2 b, float thickness, Color color)
+        {
+            var angle = MathF.Atan2(b.Y - a.Y, b.X - a.X);
+            var distance = Vector2.Distance(a, b);
+            var origin = new Vector2(0f, 0.5f);
+            var scale = new Vector2(distance, thickness);
+
+            _resources.SpriteBatch.Draw(
+                _resources.Pixel,
+                a,
+                null,
+                color,
+                angle,
+                origin,
+                scale,
+                SpriteEffects.None, 0f);
+        }
+
+        private void DrawRectOutline(
+            Rectangle rect,
+            float thickness,
+            Color color)
+        {
+            // TODO: edges have gaps
+            DrawLine(new Vector2(rect.Left, rect.Top), new Vector2(rect.Right, rect.Top), thickness, color);
+            DrawLine(new Vector2(rect.Left, rect.Bottom), new Vector2(rect.Right, rect.Bottom), thickness, color);
+            DrawLine(new Vector2(rect.Left, rect.Top), new Vector2(rect.Left, rect.Bottom), thickness, color);
+            DrawLine(new Vector2(rect.Right, rect.Top), new Vector2(rect.Right, rect.Bottom), thickness, color);
+        }
+
+        private void DrawCircleOutline(
+            Vector2 position,
+            float radius,
+            float thickness,
+            int segments,
+            Color color)
+        {
+            // TODO: edges have gaps
+            for (var i = 0; i <= segments; i++)
+            {
+                var a = (i / (float)(segments + 1)) * MathF.PI * 2f;
+                var b = ((i + 1) / (float)(segments + 1)) * MathF.PI * 2f;
+
+                var aPos = new Vector2(
+                    MathF.Cos(a),
+                    MathF.Sin(a)
+                ) * radius;
+
+                var bPos = new Vector2(
+                    MathF.Cos(b),
+                    MathF.Sin(b)
+                ) * radius;
+
+                DrawLine(position + aPos, position + bPos, thickness, color);
+            }
         }
     }
 }
