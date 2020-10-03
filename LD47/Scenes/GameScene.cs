@@ -1,6 +1,7 @@
 using LD47.Game;
 using LD47.Game.Stages;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace LD47.Scenes
 {
@@ -8,6 +9,8 @@ namespace LD47.Scenes
     {
         private GameEngine _engine;
         private GameRenderer _renderer;
+        private float _transitionCurrent;
+        private readonly float _transitionDuration = 0.3f;
 
         public GameScene(ISceneManager sceneManager, ResourceContext resources)
             : base(sceneManager, resources)
@@ -20,7 +23,11 @@ namespace LD47.Scenes
             {
                 // Always use 64px margin on both ways for floor
                 // FLOOR
-                new Rectangle(-64, 512-40, 512+128, 40),
+                new Rectangle(-64, 512-40, 216+64, 20),
+                new Rectangle(312, 512-40, 264, 20),
+                // FLOOR TOP
+                new Rectangle(-64, 108, 216+64, 20),
+                new Rectangle(312, 108, 264, 20),
                 // Left Lower Platform
                 new Rectangle(16, 512 - 128, 120, 20),
                 // Right Lower Platform
@@ -40,6 +47,10 @@ namespace LD47.Scenes
             {
 
             };
+            _engine.OnIterationStarted += (iteration) =>
+            {
+                _transitionCurrent = 0f;
+            };
 
             // TODO: delay start and stuff, states etc
             _engine.Start();
@@ -49,6 +60,15 @@ namespace LD47.Scenes
         {
             var dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+            if (_transitionCurrent <= _transitionDuration)
+            {
+                _transitionCurrent += dt;
+                if (_transitionCurrent > _transitionDuration)
+                {
+                    _transitionCurrent = _transitionDuration;
+                }
+            }
+
             _engine.Update(dt);
             _renderer.Update(gameTime);
         }
@@ -56,6 +76,18 @@ namespace LD47.Scenes
         public override void Draw(GameTime gameTime)
         {
             _renderer.Draw();
+
+            var sb = Resources.SpriteBatch;
+
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp);
+
+            var color = Color.Black;
+            color.A = (byte)(255 * (1f - (_transitionCurrent / _transitionDuration)));
+            sb.Draw(
+                Resources.Pixel,
+                new Rectangle(0, 0, 512, 512),
+                color);
+            sb.End();
         }
     }
 }

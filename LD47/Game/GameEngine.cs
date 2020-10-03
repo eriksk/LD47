@@ -31,6 +31,7 @@ namespace LD47.Game
         private GameState _state;
         public GameState State => _state;
         public event Action<GameState> OnStateChanged;
+        public event Action<int> OnIterationStarted;
 
         private Random _random;
 
@@ -75,6 +76,8 @@ namespace LD47.Game
             {
                 character.Reset();
             }
+
+            OnIterationStarted?.Invoke(Iteration);
         }
 
         public void Update(float dt)

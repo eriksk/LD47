@@ -35,8 +35,8 @@ namespace LD47.Game.Effects
                 p.Color = i % 2 == 0 ? Color.Red : Color.DarkRed;
                 
                 var offset = new Vector2(
-                    _random.Next(-8, 8),
-                    _random.Next(-8, 8)
+                    _random.Next(-16, 16),
+                    _random.Next(-16, 16)
                 );
                 p.Position = position + offset;
                 p.Velocity = new Vector2(_random.Next(-32, 32), _random.Next(-200, -100));

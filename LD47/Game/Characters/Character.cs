@@ -238,6 +238,10 @@ namespace LD47.Game.Characters
             {
                 Position.X = -borderMargin;
             }
+            if (Position.Y > 512f + borderMargin)
+            {
+                Position.Y = -borderMargin;
+            }
 
             _animations[_currentAnimation].Update(dt);
 

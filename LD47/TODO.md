@@ -11,8 +11,9 @@
 
 ## Working On
 
-* Stages - or at least one stage
+* 3 second startup time to get to safe position
 
 ## Done
 
 * Game Over State
+* Stages - or at least one stage
