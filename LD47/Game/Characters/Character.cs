@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using LD47.Animations;
+using LD47.Game.Collision;
+using LD47.Game.Stages;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -36,6 +38,14 @@ namespace LD47.Game.Characters
                     (int)(Position.Y - Height),
                     Width,
                     Height
+                );
+
+        public Rectangle GroundCheckbox =>
+             new Rectangle(
+                    (int)(Position.X - 10),
+                    (int)(Position.Y - 2),
+                    20,
+                    4
                 );
 
         public Rectangle Hitbox =>
@@ -112,11 +122,39 @@ namespace LD47.Game.Characters
             Velocity.Y = -jumpForce * 0.5f;
         }
 
-        public void Update(float dt, CharacterInput input)
+        public void Update(float dt, CharacterInput input, Stage stage)
         {
             if (Dead) return;
 
-            _airborne = Position.Y < ground - 1;
+            _airborne = true;
+            var correctionVector = Vector2.Zero;
+            foreach (var platform in stage.Platforms)
+            {
+                if (BoundingBox.Intersects(platform))
+                {
+                    correctionVector -= CollisionHelper.GetMinimumTranslationDistance(platform, BoundingBox);
+                }
+
+                if (GroundCheckbox.Intersects(platform))
+                {
+                    var groundCheckCorrection = CollisionHelper.GetMinimumTranslationDistance(platform, GroundCheckbox);
+                    if (groundCheckCorrection.Y > 0f && Velocity.Y >= 0f)
+                    {
+                        _airborne = false;
+                    }
+                }
+            }
+
+            if (correctionVector.Y < 0f && Velocity.Y > 0f)
+            {
+                Velocity.Y = 0f;
+            }
+            if (correctionVector.Y > 0f && Velocity.Y < 0f)
+            {
+                Velocity.Y = 0f;
+            }
+
+            Position += correctionVector;
 
             var movement = new Vector2();
 
@@ -166,7 +204,7 @@ namespace LD47.Game.Characters
                     }
                 }
 
-                if (input.Jump && Position.Y >= ground)
+                if (input.Jump && Grounded)
                 {
                     Velocity.Y = -jumpForce;
                 }
@@ -174,14 +212,12 @@ namespace LD47.Game.Characters
 
             Velocity.X += movement.X * acceleration * dt;
             Velocity.X += -Velocity.X * movementDamping;
-            Velocity.Y += gravity * dt;
+            if (_airborne)
+            {
+                Velocity.Y += gravity * dt;
+            }
 
             Position += Velocity * dt;
-
-            if (Position.Y >= ground)
-            {
-                Position.Y = ground;
-            }
 
             const float borderMargin = 32f;
 

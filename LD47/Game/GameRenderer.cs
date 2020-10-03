@@ -74,6 +74,8 @@ namespace LD47.Game
                     {
                         DrawRectOutline(character.JumpHitbox, 1f, Color.Red);
                     }
+
+                    DrawRectOutline(character.GroundCheckbox, 1f, character.Grounded ? Color.Red : Color.Blue);
                 }
             }
 

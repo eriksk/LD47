@@ -106,7 +106,7 @@ namespace LD47.Game
                 return;
             }
 
-            _playerCharacter.Update(_timer.DeltaTime, _inputState);
+            _playerCharacter.Update(_timer.DeltaTime, _inputState, _stage);
             RecordFrame(_playerCharacter, _inputState, frame);
 
             foreach (var character in _characters)
@@ -116,7 +116,7 @@ namespace LD47.Game
 
                 var recorder = GetOrCreateRecorder(character);
                 var input = recorder.GetFrameInput(frame);
-                character.Update(_timer.DeltaTime, CharacterInput.FromInt(input));
+                character.Update(_timer.DeltaTime, CharacterInput.FromInt(input), _stage);
             }
 
             // Attacks

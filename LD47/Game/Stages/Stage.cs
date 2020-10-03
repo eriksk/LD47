@@ -17,7 +17,7 @@ namespace LD47.Game.Stages
             var rect = Platforms[random.Next(0, Platforms.Length)];
 
             var x = random.Next(rect.Left, rect.Right);
-            return new Vector2(x, rect.Top - 1);
+            return new Vector2(MathHelper.Clamp(x, 16, 512 - 16), rect.Top - 1);
         }
     }
 }

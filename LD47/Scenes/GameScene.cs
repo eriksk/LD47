@@ -18,7 +18,13 @@ namespace LD47.Scenes
         {
             _engine = new GameEngine(new Stage(new[]
             {
-                new Rectangle(0, 512-32, 512, 32)
+                // Always use 64px margin on both ways for floor
+                // FLOOR
+                new Rectangle(-64, 512-32, 512+128, 32),
+                // Left Lower Platform
+                // new Rectangle(0, 512 - 128, 128, 16),
+                new Rectangle(512 - 128, 512 -128, 128, 128),
+                new Rectangle(0, 512 - 128, 128, 128)
             }));
             _renderer = new GameRenderer(Resources, _engine);
 
