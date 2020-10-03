@@ -9,6 +9,9 @@
 * Win State? nooo doesn't fit the theme?
 * Game Over Scene - display stats
 * 5 second time left warning - blinking screen or something - time machine starting
+* Menus
+* Fix TODOs
+* Disable Debug flags before release
 
 ## Working On
 
