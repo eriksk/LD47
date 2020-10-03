@@ -84,6 +84,8 @@ namespace LD47.Game
                     DrawRectOutline(character.GroundCheckbox, 1f, character.Grounded ? Color.Red : Color.Blue);
                 }
             }
+            
+            _engine.Particles.Draw(_resources);
 
             var arrowSourceRectangle = new Rectangle(0, 0, 32, 32);
             sb.Draw(
@@ -124,7 +126,7 @@ namespace LD47.Game
             sb.Draw(
                 _resources.Pixel,
                 progressBarRectangle,
-                Color.Red);
+                Color.Lerp(Color.Blue, Color.Red, progress));
 
             DrawStringCentered(
                 "iteration",

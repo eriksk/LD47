@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using LD47.Game.Characters;
+using LD47.Game.Effects;
 using LD47.Game.Stages;
 using LD47.Game.Timers;
 using Microsoft.Xna.Framework;
@@ -23,6 +25,8 @@ namespace LD47.Game
         public Character Player => _playerCharacter;
         public Stage Stage => _stage;
 
+        public Particles Particles { get; private set; }
+
         public int Iteration = 0;
         private GameState _state;
         public GameState State => _state;
@@ -37,6 +41,7 @@ namespace LD47.Game
             _characters = new List<Character>();
             _timer = new GameTimer();
             _random = new Random();
+            Particles = new Particles();
         }
 
         public void Start()
@@ -53,8 +58,15 @@ namespace LD47.Game
 
         private void NextIteration()
         {
+            if (!_characters.Except(new[] { _playerCharacter }).All(x => x.Dead))
+            {
+                SetState(GameState.GameOver);
+                return;
+            }
+
             Iteration++;
             _timer.Reset();
+            Particles.Clear();
 
             _playerCharacter = new Character(_stage.GetRandomSpawnPoint(_random));
             _characters.Add(_playerCharacter);
@@ -82,6 +94,10 @@ namespace LD47.Game
                     Step(currentFrame);
                 }
             }
+            else if (_state == GameState.GameOver)
+            {
+                Particles.Update(dt);
+            }
         }
 
         private void ProcessInput()
@@ -99,6 +115,8 @@ namespace LD47.Game
 
         private void Step(int frame)
         {
+            Particles.Update(_timer.DeltaTime);
+
             if (_playerCharacter.Dead)
             {
                 // TODO: Game over
@@ -106,7 +124,7 @@ namespace LD47.Game
                 return;
             }
 
-            _playerCharacter.Update(_timer.DeltaTime, _inputState, _stage);
+            _playerCharacter.Update(_timer.DeltaTime, _inputState, this);
             RecordFrame(_playerCharacter, _inputState, frame);
 
             foreach (var character in _characters)
@@ -116,7 +134,7 @@ namespace LD47.Game
 
                 var recorder = GetOrCreateRecorder(character);
                 var input = recorder.GetFrameInput(frame);
-                character.Update(_timer.DeltaTime, CharacterInput.FromInt(input), _stage);
+                character.Update(_timer.DeltaTime, CharacterInput.FromInt(input), this);
             }
 
             // Attacks
@@ -139,11 +157,13 @@ namespace LD47.Game
 
                     if (character1.Attacking && character1.Hitbox.Intersects(character2.BoundingBox))
                     {
+                        Particles.SpawnDeath(character2.BoundingBox.Center.ToVector2());
                         character2.Die();
                         continue;
                     }
                     if (character1.JumpAttacking && character1.JumpHitbox.Intersects(character2.BoundingBox))
                     {
+                        Particles.SpawnDeath(character2.BoundingBox.Center.ToVector2());
                         character2.Die();
                         character1.Bounce();
                         continue;

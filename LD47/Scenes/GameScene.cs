@@ -26,7 +26,13 @@ namespace LD47.Scenes
                 // Right Lower Platform
                 new Rectangle(512 - (120 + 16), 512 - 128, 120, 20),
                 // Middle left Platform
-                new Rectangle(-64, 280, 140+74, 20),
+                new Rectangle(-64, 280, 140+76, 20),
+                // Middle right Platform
+                new Rectangle(364, 280, 140+76, 20),
+                // Middle middle Platform
+                new Rectangle(204, 344, 120, 20),
+                // Middle top Platform
+                new Rectangle(204, 196, 120, 20),
             }));
             _renderer = new GameRenderer(Resources, _engine);
 

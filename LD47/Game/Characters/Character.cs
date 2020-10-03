@@ -122,13 +122,14 @@ namespace LD47.Game.Characters
             Velocity.Y = -jumpForce * 0.5f;
         }
 
-        public void Update(float dt, CharacterInput input, Stage stage)
+        public void Update(float dt, CharacterInput input, GameEngine engine)
         {
             if (Dead) return;
 
+            var wasAirborne = _airborne;
             _airborne = true;
             var correctionVector = Vector2.Zero;
-            foreach (var platform in stage.Platforms)
+            foreach (var platform in engine.Stage.Platforms)
             {
                 if (BoundingBox.Intersects(platform))
                 {
@@ -195,7 +196,7 @@ namespace LD47.Game.Characters
                 if (_airborne)
                 {
                     // Jump cancel
-                    if(!input.Jump && Velocity.Y < 0f)
+                    if(!input.Jump && Velocity.Y < 0f) // only when going upwards
                     {
                         // Add extra gravity to limit jump force
                         Velocity.Y += gravity * dt;
@@ -213,6 +214,7 @@ namespace LD47.Game.Characters
 
                 if (input.Jump && Grounded)
                 {
+                    engine.Particles.SpawnJump(Position);
                     Velocity.Y = -jumpForce;
                 }
             }
@@ -238,6 +240,14 @@ namespace LD47.Game.Characters
             }
 
             _animations[_currentAnimation].Update(dt);
+
+            
+            if(wasAirborne && Grounded)
+            {
+                // Landed
+                // TODO: "SpawnLand"
+                engine.Particles.SpawnLand(Position);
+            }
         }
     }
 }
