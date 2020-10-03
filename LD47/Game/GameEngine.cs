@@ -14,16 +14,20 @@ namespace LD47.Game
         private CharacterInput _inputState;
         private Character _playerCharacter;
         private Dictionary<int, CharacterFrameRecorder> _recorders;
-        public readonly int IterationTimeInframes = 60 * 5; // 5 sec
+        public readonly int IterationTimeInframes = 60 * 10; // 5 sec
 
         public List<Character> Characters => _characters;
         public GameTimer Timer => _timer;
+        public Character Player => _playerCharacter;
+
+        private Random _random;
 
         public GameEngine()
         {
             _recorders = new Dictionary<int, CharacterFrameRecorder>();
             _characters = new List<Character>();
             _timer = new GameTimer();
+            _random = new Random();
         }
 
         public void Start()
@@ -35,13 +39,12 @@ namespace LD47.Game
         {
             _timer.Reset();
 
-            _playerCharacter = new Character();
+            _playerCharacter = new Character(new Vector2(_random.Next(16, 512 - 16), 512));
             _characters.Add(_playerCharacter);
-            
-            var startPosition = new Vector2(256, 512);
-            foreach(var character in _characters)
+
+            foreach (var character in _characters)
             {
-                character.Reset(startPosition);                
+                character.Reset();
             }
         }
 
@@ -76,7 +79,7 @@ namespace LD47.Game
 
         private void Step(int frame)
         {
-            if(_playerCharacter.Dead)
+            if (_playerCharacter.Dead)
             {
                 // TODO: Game over
 
@@ -86,8 +89,8 @@ namespace LD47.Game
 
             foreach (var character in _characters)
             {
-                if(character == _playerCharacter) continue;
-                if(character.Dead) continue;
+                if (character == _playerCharacter) continue;
+                if (character.Dead) continue;
 
                 var recorder = GetOrCreateRecorder(character);
                 var input = recorder.GetFrameInput(frame);
