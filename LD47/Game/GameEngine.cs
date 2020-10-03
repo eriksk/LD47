@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LD47.Game.Audio;
 using LD47.Game.Characters;
 using LD47.Game.Effects;
 using LD47.Game.Stages;
@@ -30,19 +31,56 @@ namespace LD47.Game
         public int Iteration = 0;
         private GameState _state;
         public GameState State => _state;
-        public event Action<GameState> OnStateChanged;
-        public event Action<int> OnIterationStarted;
+
+        public readonly GameEvents Events;
 
         private Random _random;
 
         public GameEngine(Stage stage)
         {
             _stage = stage;
+            Events = new GameEvents();
             _recorders = new Dictionary<int, CharacterFrameRecorder>();
             _characters = new List<Character>();
             _timer = new GameTimer();
             _random = new Random();
             Particles = new Particles();
+
+            SetupEvents();
+        }
+
+        private void SetupEvents()
+        {
+            Events.OnCharacterLanded += (character) =>
+            {
+                Particles.SpawnLand(character.Position);
+                SoundManager.I.PlaySfx("land");
+            };
+            Events.OnCharacterJumped += (character) =>
+            {
+                Particles.SpawnJump(character.Position);
+                SoundManager.I.PlaySfx("jump");
+            };
+            Events.OnCharacterDied += (character) =>
+            {
+                Particles.SpawnDeath(character.BoundingBox.Center.ToVector2());
+                SoundManager.I.PlaySfx("die");
+            };
+            Events.OnCharacterAttacked += (character) =>
+            {
+                SoundManager.I.PlaySfx("attack", 0.5f);
+            };
+            Events.OnIterationStarted += (iteration) =>
+            {
+                SoundManager.I.PlaySfx("time_travel");
+            };
+            Events.OnStateChanged += (state) =>
+            {
+                if (state == GameState.GameOver)
+                {
+                    SoundManager.I.PlaySfx("game_over");
+                }
+            };
         }
 
         public void Start()
@@ -54,7 +92,7 @@ namespace LD47.Game
         private void SetState(GameState state)
         {
             _state = state;
-            OnStateChanged?.Invoke(_state);
+            Events.InvokeStateChanged(_state);
         }
 
         private void NextIteration()
@@ -77,7 +115,7 @@ namespace LD47.Game
                 character.Reset();
             }
 
-            OnIterationStarted?.Invoke(Iteration);
+            Events.InvokeIterationStarted(Iteration);
         }
 
         public void Update(float dt)
@@ -160,15 +198,15 @@ namespace LD47.Game
 
                     if (character1.Attacking && character1.Hitbox.Intersects(character2.BoundingBox))
                     {
-                        Particles.SpawnDeath(character2.BoundingBox.Center.ToVector2());
                         character2.Die();
+                        Events.InvokeCharacterDied(character2);
                         continue;
                     }
                     if (character1.JumpAttacking && character1.JumpHitbox.Intersects(character2.BoundingBox))
                     {
-                        Particles.SpawnDeath(character2.BoundingBox.Center.ToVector2());
                         character2.Die();
                         character1.Bounce();
+                        Events.InvokeCharacterDied(character2);
                         continue;
                     }
                 }

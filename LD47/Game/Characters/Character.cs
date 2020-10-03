@@ -58,10 +58,10 @@ namespace LD47.Game.Characters
 
         public Rectangle JumpHitbox =>
              new Rectangle(
-                    (int)(Position.X - (Width / 2)),
+                    (int)(Position.X - 8),
                     (int)(Position.Y),
-                    Width,
-                    Height / 2
+                    16,
+                    8
                 );
 
         public bool Attacking => _attackCooldown > 0f;
@@ -167,6 +167,7 @@ namespace LD47.Game.Characters
             {
                 _attackCooldown = GetAnimationDuration("attack");
                 SetAnimation("attack");
+                engine.Events.InvokeCharacterAttacked(this);
             }
             else
             {
@@ -214,8 +215,8 @@ namespace LD47.Game.Characters
 
                 if (input.Jump && Grounded)
                 {
-                    engine.Particles.SpawnJump(Position);
                     Velocity.Y = -jumpForce;
+                    engine.Events.InvokeCharacterJumped(this);
                 }
             }
 
@@ -249,8 +250,7 @@ namespace LD47.Game.Characters
             if(wasAirborne && Grounded)
             {
                 // Landed
-                // TODO: "SpawnLand"
-                engine.Particles.SpawnLand(Position);
+                engine.Events.InvokeCharacterLanded(this);
             }
         }
     }

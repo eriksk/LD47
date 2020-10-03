@@ -43,11 +43,11 @@ namespace LD47.Scenes
             }));
             _renderer = new GameRenderer(Resources, _engine);
 
-            _engine.OnStateChanged += (state) =>
+            _engine.Events.OnStateChanged += (state) =>
             {
 
             };
-            _engine.OnIterationStarted += (iteration) =>
+            _engine.Events.OnIterationStarted += (iteration) =>
             {
                 _transitionCurrent = 0f;
             };

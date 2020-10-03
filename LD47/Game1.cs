@@ -1,4 +1,5 @@
-﻿using LD47.Scenes;
+﻿using LD47.Game.Audio;
+using LD47.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -32,6 +33,8 @@ namespace LD47
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _resources = new ResourceContext(GraphicsDevice, _spriteBatch, Content, Content.Load<SpriteFont>("Fonts/font"));
+
+            SoundManager.I.Load(Content);
 
             LoadScene(new GameScene(this, _resources));
         }
