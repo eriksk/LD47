@@ -5,7 +5,7 @@ namespace LD47.Game
 
         public void Update(float dt)
         {
-
+            
         }
     }
 }

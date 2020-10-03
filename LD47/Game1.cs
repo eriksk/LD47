@@ -1,13 +1,17 @@
-﻿using Microsoft.Xna.Framework;
+﻿using LD47.Scenes;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace LD47
 {
-    public class Game1 : Microsoft.Xna.Framework.Game
+    public class Game1 : Microsoft.Xna.Framework.Game, ISceneManager
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        private IScene _scene;
+        private ResourceContext _resources;
 
         public Game1()
         {
@@ -27,6 +31,16 @@ namespace LD47
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _resources = new ResourceContext(GraphicsDevice, _spriteBatch, Content);
+
+            LoadScene(new GameScene(this, _resources));
+        }
+
+        public void LoadScene(IScene scene)
+        {
+            // TODO: transitions
+            scene.Load();
+            _scene = scene;
         }
 
         protected override void Update(GameTime gameTime)
@@ -36,6 +50,7 @@ namespace LD47
                 Exit();
             }
 
+            _scene.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -43,6 +58,8 @@ namespace LD47
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.White);
+
+            _scene.Draw(gameTime);
 
             base.Draw(gameTime);
         }
