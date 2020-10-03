@@ -20,11 +20,13 @@ namespace LD47.Scenes
             {
                 // Always use 64px margin on both ways for floor
                 // FLOOR
-                new Rectangle(-64, 512-32, 512+128, 32),
+                new Rectangle(-64, 512-40, 512+128, 40),
                 // Left Lower Platform
-                // new Rectangle(0, 512 - 128, 128, 16),
-                new Rectangle(512 - 128, 512 -128, 128, 128),
-                new Rectangle(0, 512 - 128, 128, 128)
+                new Rectangle(16, 512 - 128, 120, 20),
+                // Right Lower Platform
+                new Rectangle(512 - (120 + 16), 512 - 128, 120, 20),
+                // Middle left Platform
+                new Rectangle(-64, 280, 140+74, 20),
             }));
             _renderer = new GameRenderer(Resources, _engine);
 

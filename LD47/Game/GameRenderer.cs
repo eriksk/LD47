@@ -10,6 +10,7 @@ namespace LD47.Game
         private readonly GameEngine _engine;
         private readonly Texture2D _characterTexture;
         private readonly Texture2D _iconsTexture;
+        private readonly Texture2D _stageTexture;
         public bool DrawDebug = true;
         private float _totalTime;
 
@@ -19,6 +20,7 @@ namespace LD47.Game
             _engine = engine;
             _characterTexture = resources.Content.Load<Texture2D>("Gfx/character");
             _iconsTexture = resources.Content.Load<Texture2D>("Gfx/icons");
+            _stageTexture = resources.Content.Load<Texture2D>("Gfx/stage");
         }
 
         public void Update(GameTime time)
@@ -32,9 +34,13 @@ namespace LD47.Game
 
             sb.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp);
 
-            if(DrawDebug)
+            sb.Draw(_stageTexture,
+                new Rectangle(0, 0, 512, 512),
+                Color.White);
+
+            if (DrawDebug)
             {
-                foreach(var platform in _engine.Stage.Platforms)
+                foreach (var platform in _engine.Stage.Platforms)
                 {
                     DrawRectOutline(platform, 1, Color.Orange);
                 }
@@ -70,7 +76,7 @@ namespace LD47.Game
                     {
                         DrawRectOutline(character.Hitbox, 1f, Color.Red);
                     }
-                    if(character.JumpAttacking)
+                    if (character.JumpAttacking)
                     {
                         DrawRectOutline(character.JumpHitbox, 1f, Color.Red);
                     }
@@ -82,7 +88,7 @@ namespace LD47.Game
             var arrowSourceRectangle = new Rectangle(0, 0, 32, 32);
             sb.Draw(
                 _iconsTexture,
-                _engine.Player.Position + new Vector2(0f, -80f + (MathF.Sin(_totalTime*10f) * 4f)),
+                _engine.Player.Position + new Vector2(0f, -80f + (MathF.Sin(_totalTime * 10f) * 4f)),
                 arrowSourceRectangle,
                 Color.White,
                 0f,
@@ -126,7 +132,7 @@ namespace LD47.Game
                 Color.Gray,
                 0f,
                 0.5f);
-                
+
             DrawStringCentered(
                 _engine.Iteration.ToString(),
                 new Vector2(512f * 0.5f, 128f),

@@ -194,6 +194,13 @@ namespace LD47.Game.Characters
 
                 if (_airborne)
                 {
+                    // Jump cancel
+                    if(!input.Jump && Velocity.Y < 0f)
+                    {
+                        // Add extra gravity to limit jump force
+                        Velocity.Y += gravity * dt;
+                    }
+
                     if (Velocity.Y < 0f)
                     {
                         SetAnimation("jump_up");
