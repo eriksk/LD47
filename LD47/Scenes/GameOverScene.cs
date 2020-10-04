@@ -26,7 +26,7 @@ namespace LD47.Scenes
 
             if(keys.IsKeyDown(Keys.Enter))
             {
-                SceneManager.LoadScene(new GameScene(SceneManager, Resources));
+                SceneManager.LoadScene(new PreGameScene(SceneManager, Resources));
             }
             else if(keys.IsKeyDown(Keys.Escape))
             {

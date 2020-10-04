@@ -64,11 +64,11 @@ namespace LD47.Game
 
                 sb.Draw(
                     _characterTexture,
-                    character.Position,
+                    character.Position + new Vector2(character.Flipped ? -8f : 8f, 0f),
                     sourceRectangle,
                     isPlayer ? Color.White : Color.Gray,
                     0f,
-                    new Vector2(cellSize * 0.5f, cellSize),
+                    new Vector2(cellSize * 0.5f, cellSize*0.95f),
                     Vector2.One * 4f,
                     character.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
 

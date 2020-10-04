@@ -2,7 +2,6 @@
 using LD47.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace LD47
 {
@@ -29,6 +28,7 @@ namespace LD47
             _graphics.PreferredBackBufferWidth = 512;
             _graphics.PreferredBackBufferHeight = 512;
             _graphics.ApplyChanges();
+            Window.Title = "Time Knight";
             base.Initialize();
         }
 
@@ -38,12 +38,7 @@ namespace LD47
             _resources = new ResourceContext(GraphicsDevice, _spriteBatch, Content, Content.Load<SpriteFont>("Fonts/font"));
 
             SoundManager.I.Load(Content);
-
-            // LoadScene(new GameScene(this, _resources));
             LoadScene(new StartScene(this, _resources));
-            // LoadScene(new GameOverScene(new GameResult(){
-            //     Iteration = 12
-            // }, this, _resources));
         }
 
         public void LoadScene(IScene scene)

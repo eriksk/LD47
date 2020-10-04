@@ -1,16 +1,13 @@
 ## TODO
 
-* Scene Transitions
-* Juice
-* Disable Debug flags before release
 * Fix TODOs
 
 ## Working On
 
-* Remake player sprite
 
 ## Done
 
+* Remake player sprite
 * Font
 * Intro/Controls/Description screen
 * Game Over State
