@@ -146,19 +146,30 @@ namespace LD47.Game
                 progressBarRectangle,
                 Color.Lerp(Color.Blue, Color.Red, progress));
 
-            DrawStringCentered(
+            DrawStringCenteredWithShadow(
                 "iteration",
                 new Vector2(512f * 0.5f, 64f),
-                Color.Gray,
+                Color.White,
                 0f,
                 0.5f);
 
-            DrawStringCentered(
+            DrawStringCenteredWithShadow(
                 _engine.Iteration.ToString(),
                 new Vector2(512f * 0.5f, 128f),
-                Color.Black,
+                Color.White,
                 0f,
                 1f);
+
+            if (progress > 0.75f)
+            {
+                var color = Color.Lerp(Color.Red, Color.Orange, 0.5f + MathF.Sin(_totalTime * 10f) * 0.5f);
+                color.A = 255;
+                color *= 0.3f;
+                sb.Draw(
+                    _resources.Pixel,
+                    _fullScreen,
+                    color);
+            }
         }
 
         private void DrawStringCenteredWithShadow(string text, Vector2 position, Color color, float rotation, float scale)

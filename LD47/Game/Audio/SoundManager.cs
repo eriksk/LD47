@@ -26,6 +26,7 @@ namespace LD47.Game.Audio
             LoadSound(content, "switch");
             LoadSound(content, "time_travel");
             LoadSound(content, "attack");
+            LoadSound(content, "tick");
         }
 
         private void LoadSound(ContentManager content, string name)

@@ -110,6 +110,8 @@ namespace LD47.Game
             Events.InvokeStateChanged(_state);
         }
 
+        private bool IsInWinState => _playerCharacter.Alive && _characters.Except(new[] { _playerCharacter }).All(x => x.Dead);
+
         private void NextIteration()
         {
             if (!_characters.Except(new[] { _playerCharacter }).All(x => x.Dead))
@@ -164,6 +166,7 @@ namespace LD47.Game
                     // Allow player to reposition to a good starting point
                     ProcessInput();
                     _playerCharacter.Update(dt, _inputState, this);
+                    Particles.Update(dt);
                 }
             }
             else if (_state == GameState.GameOver)
@@ -195,6 +198,15 @@ namespace LD47.Game
                 SetState(GameState.GameOver);
                 return;
             }
+
+            if(IsInWinState && Iteration > 1) // Let first iteration play out
+            {
+                //Early exit
+                NextIteration();
+                return;
+            }
+
+            UpdateClockTickSound(frame);
 
             _playerCharacter.Update(_timer.DeltaTime, _inputState, this);
             RecordFrame(_playerCharacter, _inputState, frame);
@@ -241,6 +253,29 @@ namespace LD47.Game
                         continue;
                     }
                 }
+            }
+        }
+
+        private void UpdateClockTickSound(int frame)
+        {
+            var frameSegment = IterationTimeInframes / 4;
+            var mod = 60;
+            if (frame > frameSegment && frame <= frameSegment * 2)
+            {
+                mod = 30;
+            }
+            if (frame > frameSegment * 2 && frame <= frameSegment * 3)
+            {
+                mod = 30;
+            }
+            if (frame > frameSegment * 3)
+            {
+                mod = 15;
+            }
+
+            if (frame % mod == 0)
+            {
+                SoundManager.I.PlaySfx("tick");
             }
         }
 

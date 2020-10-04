@@ -49,6 +49,12 @@
 /processorParam:Quality=Best
 /build:Audio/switch.wav
 
+#begin Audio/tick.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/tick.wav
+
 #begin Audio/time_travel.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
