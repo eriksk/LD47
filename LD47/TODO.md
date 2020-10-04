@@ -1,9 +1,7 @@
 ## TODO
 
-* Game Over Scene - display stats
 * Intro/Controls/Description screen
 * Scene Transitions
-* Menus
 * Remake player sprite
 * Juice
 * Disable Debug flags before release
@@ -12,7 +10,7 @@
 
 ## Working On
 
-* Delay between win and next iteration
+* Menus
 
 ## Done
 
@@ -23,3 +21,5 @@
 * 5 second time left warning - blinking screen or something - time machine starting
 * Platform support
 * Decide iteration time
+* Delay between win and next iteration
+* Game Over Scene - display stats

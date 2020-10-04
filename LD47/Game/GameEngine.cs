@@ -37,6 +37,7 @@ namespace LD47.Game
         public GameState State => _state;
         private float _startWaitTime = 0f;
         public float StartTimeCountDown => _startWaitTime;
+        private float _nextIterationDelay;
 
         public GameEngine(Stage stage)
         {
@@ -106,6 +107,10 @@ namespace LD47.Game
             {
                 _startWaitTime = 3f;
             }
+            if (_state == GameState.WaitForNextIteration)
+            {
+                _nextIterationDelay = 2f;
+            }
 
             Events.InvokeStateChanged(_state);
         }
@@ -169,6 +174,15 @@ namespace LD47.Game
                     Particles.Update(dt);
                 }
             }
+            else if (_state == GameState.WaitForNextIteration)
+            {
+                _nextIterationDelay -= dt;
+                Particles.Update(dt);
+                if(_nextIterationDelay <= 0f)
+                {
+                    NextIteration();
+                }
+            }
             else if (_state == GameState.GameOver)
             {
                 Particles.Update(dt);
@@ -199,10 +213,10 @@ namespace LD47.Game
                 return;
             }
 
-            if(IsInWinState && Iteration > 1) // Let first iteration play out
+            if (IsInWinState && Iteration > 1) // Let first iteration play out
             {
                 //Early exit
-                NextIteration();
+                SetState(GameState.WaitForNextIteration);
                 return;
             }
 
