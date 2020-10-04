@@ -11,7 +11,7 @@ namespace LD47.Game
         private readonly Texture2D _characterTexture;
         private readonly Texture2D _iconsTexture;
         private readonly Texture2D _stageTexture;
-        public bool DrawDebug = true;
+        public bool DrawDebug = false;
         private float _totalTime;
 
         private readonly Vector2 _center = new Vector2(512, 512) * 0.5f;

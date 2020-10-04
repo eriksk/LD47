@@ -216,6 +216,7 @@ namespace LD47.Game
             if (IsInWinState && Iteration > 1) // Let first iteration play out
             {
                 //Early exit
+                SoundManager.I.PlaySfx("win");
                 SetState(GameState.WaitForNextIteration);
                 return;
             }

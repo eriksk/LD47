@@ -39,7 +39,8 @@ namespace LD47
 
             SoundManager.I.Load(Content);
 
-            LoadScene(new GameScene(this, _resources));
+            // LoadScene(new GameScene(this, _resources));
+            LoadScene(new StartScene(this, _resources));
             // LoadScene(new GameOverScene(new GameResult(){
             //     Iteration = 12
             // }, this, _resources));

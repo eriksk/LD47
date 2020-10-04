@@ -43,6 +43,12 @@
 /processorParam:Quality=Best
 /build:Audio/land.wav
 
+#begin Audio/music.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/music.ogg
+
 #begin Audio/switch.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -60,6 +66,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Audio/time_travel.wav
+
+#begin Audio/win.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/win.wav
 
 #begin Fonts/font.spritefont
 /importer:FontDescriptionImporter
@@ -104,6 +116,18 @@
 /processorParam:TextureFormat=Color
 /build:Gfx/icons.png
 
+#begin Gfx/logo.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Gfx/logo.png
+
 #begin Gfx/stage.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -115,4 +139,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Gfx/stage.png
+
+#begin Gfx/title_screen.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Gfx/title_screen.png
 

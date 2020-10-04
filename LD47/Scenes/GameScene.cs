@@ -1,4 +1,5 @@
 using LD47.Game;
+using LD47.Game.Audio;
 using LD47.Game.Stages;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -56,6 +57,7 @@ namespace LD47.Scenes
             _engine.Events.OnIterationStarted += (iteration) =>
             {
                 _transitionCurrent = 0f;
+                SoundManager.I.ResetSong();
             };
 
             // TODO: delay start and stuff, states etc
