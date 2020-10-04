@@ -28,13 +28,15 @@ namespace LD47.Game
 
         public Particles Particles { get; private set; }
 
-        public int Iteration = 0;
-        private GameState _state;
-        public GameState State => _state;
-
         public readonly GameEvents Events;
 
         private Random _random;
+
+        public int Iteration = 0;
+        private GameState _state;
+        public GameState State => _state;
+        private float _startWaitTime = 0f;
+        public float StartTimeCountDown => _startWaitTime;
 
         public GameEngine(Stage stage)
         {
@@ -85,13 +87,26 @@ namespace LD47.Game
 
         public void Start()
         {
-            _state = GameState.Playing;
+            _state = GameState.StartingIteration;
             NextIteration();
         }
 
         private void SetState(GameState state)
         {
+            if (state == GameState.Playing && _state == GameState.StartingIteration)
+            {
+                // Clear when starting game
+                GetOrCreateRecorder(_playerCharacter).Clear();
+                _playerCharacter.SetCurrentAsStartingPosition();
+            }
+
             _state = state;
+
+            if (_state == GameState.StartingIteration)
+            {
+                _startWaitTime = 3f;
+            }
+
             Events.InvokeStateChanged(_state);
         }
 
@@ -115,6 +130,7 @@ namespace LD47.Game
                 character.Reset();
             }
 
+            SetState(GameState.StartingIteration);
             Events.InvokeIterationStarted(Iteration);
         }
 
@@ -133,6 +149,21 @@ namespace LD47.Game
                         return;
                     }
                     Step(currentFrame);
+                }
+            }
+            else if (_state == GameState.StartingIteration)
+            {
+                _startWaitTime -= dt;
+                if (_startWaitTime <= 0f)
+                {
+                    _startWaitTime = 0f;
+                    SetState(GameState.Playing);
+                }
+                else
+                {
+                    // Allow player to reposition to a good starting point
+                    ProcessInput();
+                    _playerCharacter.Update(dt, _inputState, this);
                 }
             }
             else if (_state == GameState.GameOver)

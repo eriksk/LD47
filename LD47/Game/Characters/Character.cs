@@ -14,7 +14,7 @@ namespace LD47.Game.Characters
         public readonly int Id = _idCounter++;
 
         public Vector2 Position;
-        public readonly Vector2 InitialPosition;
+        public Vector2 InitialPosition { get; private set; }
         public Vector2 Velocity;
         public Color Color = Color.Black;
         public bool Alive;
@@ -97,6 +97,11 @@ namespace LD47.Game.Characters
             Flipped = false;
             _attackCooldown = 0f;
             SetAnimation("idle");
+        }
+
+        public void SetCurrentAsStartingPosition()
+        {
+            InitialPosition = Position;
         }
 
         private float GetAnimationDuration(string name)
@@ -197,7 +202,7 @@ namespace LD47.Game.Characters
                 if (_airborne)
                 {
                     // Jump cancel
-                    if(!input.Jump && Velocity.Y < 0f) // only when going upwards
+                    if (!input.Jump && Velocity.Y < 0f) // only when going upwards
                     {
                         // Add extra gravity to limit jump force
                         Velocity.Y += gravity * dt;
@@ -246,8 +251,8 @@ namespace LD47.Game.Characters
 
             _animations[_currentAnimation].Update(dt);
 
-            
-            if(wasAirborne && Grounded)
+
+            if (wasAirborne && Grounded)
             {
                 // Landed
                 engine.Events.InvokeCharacterLanded(this);

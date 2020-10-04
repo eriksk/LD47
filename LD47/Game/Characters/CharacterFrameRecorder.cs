@@ -12,6 +12,11 @@ namespace LD47.Game.Characters
             _frames = new List<CharacterInputFrame>();
         }
 
+        public void Clear()
+        {
+            _frames.Clear();
+        }
+
         public void PushFrame(int frame, CharacterInput inputState)
         {
             _frames.Add(new CharacterInputFrame()

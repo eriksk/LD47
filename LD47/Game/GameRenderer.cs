@@ -14,6 +14,9 @@ namespace LD47.Game
         public bool DrawDebug = true;
         private float _totalTime;
 
+        private readonly Vector2 _center = new Vector2(512, 512) * 0.5f;
+        private readonly Rectangle _fullScreen = new Rectangle(0, 0, 512, 512);
+
         public GameRenderer(ResourceContext resources, GameEngine engine)
         {
             _resources = resources;
@@ -84,7 +87,7 @@ namespace LD47.Game
                     DrawRectOutline(character.GroundCheckbox, 1f, character.Grounded ? Color.Red : Color.Blue);
                 }
             }
-            
+
             _engine.Particles.Draw(_resources);
 
             var arrowSourceRectangle = new Rectangle(0, 0, 32, 32);
@@ -100,14 +103,29 @@ namespace LD47.Game
 
             sb.End();
 
-            DrawUI();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
+            if (_engine.State == GameState.Playing)
+            {
+                DrawGameStateUI(sb);
+            }
+            else if (_engine.State == GameState.StartingIteration)
+            {
+                DrawIterationStartingUI(sb);
+            }
+            sb.End();
         }
 
-        private void DrawUI()
+        private void DrawIterationStartingUI(SpriteBatch sb)
         {
-            var sb = _resources.SpriteBatch;
-            sb.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp);
+            sb.Draw(_resources.Pixel, _fullScreen, new Color(0, 0, 0, 100));
+            var textPosition = new Vector2(_fullScreen.Center.X, _fullScreen.Top + 50);
+            DrawStringCenteredWithShadow("TIME LOOP STARTING", textPosition, Color.White, 0f, 1f);
+            DrawStringCenteredWithShadow("Find a good starting position!", textPosition + new Vector2(0f, 32), Color.White, 0f, 0.5f);
+            DrawStringCenteredWithShadow((((int)_engine.StartTimeCountDown) + 1).ToString(), _center, Color.White, 0f, 2f);
+        }
 
+        private void DrawGameStateUI(SpriteBatch sb)
+        {
             var progress = _engine.Timer.TotalElapsedFrames / (float)_engine.IterationTimeInframes;
 
             var progressBarRectangle = new Rectangle(
@@ -141,8 +159,29 @@ namespace LD47.Game
                 Color.Black,
                 0f,
                 1f);
+        }
 
-            sb.End();
+        private void DrawStringCenteredWithShadow(string text, Vector2 position, Color color, float rotation, float scale)
+        {
+            var origin = _resources.Font.MeasureString(text) * 0.5f;
+
+            _resources.SpriteBatch.DrawString(_resources.Font,
+                text,
+                position + new Vector2(2, 2) * scale,
+                Color.Black,
+                rotation,
+                origin,
+                Vector2.One * scale,
+                SpriteEffects.None, 0f);
+
+            _resources.SpriteBatch.DrawString(_resources.Font,
+                text,
+                position,
+                color,
+                rotation,
+                origin,
+                Vector2.One * scale,
+                SpriteEffects.None, 0f);
         }
 
         private void DrawStringCentered(string text, Vector2 position, Color color, float rotation, float scale)

@@ -12,12 +12,13 @@
 * Menus
 * Fix TODOs
 * Disable Debug flags before release
+* MUSIC
 
 ## Working On
 
-* 3 second startup time to get to safe position
 
 ## Done
 
 * Game Over State
 * Stages - or at least one stage
+* 3 second startup time to get to safe position
