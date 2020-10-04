@@ -94,8 +94,10 @@ namespace LD47.Game.Characters
             Position = InitialPosition;
             Velocity = Vector2.Zero;
             Alive = true;
-            Flipped = false;
+            // Flipped = false;
             _attackCooldown = 0f;
+            _airborne = false;
+            _currentAnimation = "";
             SetAnimation("idle");
         }
 

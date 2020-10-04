@@ -112,6 +112,14 @@ namespace LD47.Game
                 _nextIterationDelay = 2f;
             }
 
+            if (_state == GameState.Playing)
+            {
+                foreach (var character in _characters)
+                {
+                    character.Reset();
+                }
+            }
+
             Events.InvokeStateChanged(_state);
         }
 
@@ -178,7 +186,7 @@ namespace LD47.Game
             {
                 _nextIterationDelay -= dt;
                 Particles.Update(dt);
-                if(_nextIterationDelay <= 0f)
+                if (_nextIterationDelay <= 0f)
                 {
                     NextIteration();
                 }
