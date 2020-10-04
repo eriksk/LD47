@@ -45,7 +45,13 @@ namespace LD47.Scenes
 
             _engine.Events.OnStateChanged += (state) =>
             {
-
+                if(state == GameState.GameOver)
+                {
+                    SceneManager.LoadScene(new GameOverScene(new GameResult()
+                    {
+                        Iteration = _engine.Iteration
+                    }, SceneManager, Resources));
+                }
             };
             _engine.Events.OnIterationStarted += (iteration) =>
             {

@@ -13,6 +13,7 @@ namespace LD47
 
         private IScene _scene;
         private ResourceContext _resources;
+        private static bool _exitRequested;
 
         public Game1()
         {
@@ -20,6 +21,8 @@ namespace LD47
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
+
+        public static void RequestExit() => _exitRequested = true;
 
         protected override void Initialize()
         {
@@ -36,7 +39,10 @@ namespace LD47
 
             SoundManager.I.Load(Content);
 
-            LoadScene(new GameScene(this, _resources));
+            // LoadScene(new GameScene(this, _resources));
+            LoadScene(new GameOverScene(new GameResult(){
+                Iteration = 12
+            }, this, _resources));
         }
 
         public void LoadScene(IScene scene)
@@ -48,9 +54,10 @@ namespace LD47
 
         protected override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (_exitRequested)
             {
                 Exit();
+                return;
             }
 
             _scene.Update(gameTime);

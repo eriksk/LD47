@@ -1,17 +1,14 @@
 ## TODO
 
-* Scene Transitions
-* Intro/Controls/Description screen
-* Platform support
-* Juice
-* Decide iteration time
-* Win State? nooo doesn't fit the theme?
 * Game Over Scene - display stats
+* Intro/Controls/Description screen
+* Scene Transitions
 * Menus
-* Fix TODOs
-* Disable Debug flags before release
-* MUSIC
 * Remake player sprite
+* Juice
+* Disable Debug flags before release
+* Fix TODOs
+* MUSIC
 
 ## Working On
 
@@ -24,3 +21,5 @@
 * 3 second startup time to get to safe position
 * Audio
 * 5 second time left warning - blinking screen or something - time machine starting
+* Platform support
+* Decide iteration time
