@@ -198,7 +198,7 @@ namespace LD47.Game
                 Left = keys.IsKeyDown(Keys.Left),
                 Right = keys.IsKeyDown(Keys.Right),
                 Jump = keys.IsKeyDown(Keys.Up),
-                Shoot = keys.IsKeyDown(Keys.LeftControl)
+                Shoot = keys.IsKeyDown(Keys.Down)
             };
         }
 

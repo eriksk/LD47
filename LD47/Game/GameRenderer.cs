@@ -147,15 +147,15 @@ namespace LD47.Game
                 Color.Lerp(Color.Blue, Color.Red, progress));
 
             DrawStringCenteredWithShadow(
-                "iteration",
-                new Vector2(512f * 0.5f, 64f),
+                "LOOP",
+                new Vector2(512f * 0.5f, 16f),
                 Color.White,
                 0f,
                 0.5f);
 
             DrawStringCenteredWithShadow(
                 _engine.Iteration.ToString(),
-                new Vector2(512f * 0.5f, 128f),
+                new Vector2(512f * 0.5f, 48f),
                 Color.White,
                 0f,
                 1f);

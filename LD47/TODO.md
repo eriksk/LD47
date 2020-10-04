@@ -1,19 +1,18 @@
 ## TODO
 
-* Intro/Controls/Description screen
 * Scene Transitions
-* Remake player sprite
 * Juice
 * Disable Debug flags before release
 * Fix TODOs
-* MUSIC
 
 ## Working On
 
-* Menus
+* Remake player sprite
 
 ## Done
 
+* Font
+* Intro/Controls/Description screen
 * Game Over State
 * Stages - or at least one stage
 * 3 second startup time to get to safe position
@@ -23,3 +22,5 @@
 * Decide iteration time
 * Delay between win and next iteration
 * Game Over Scene - display stats
+* Menus
+* MUSIC

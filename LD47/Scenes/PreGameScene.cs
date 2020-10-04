@@ -5,54 +5,33 @@ using Microsoft.Xna.Framework.Input;
 
 namespace LD47.Scenes
 {
-    public class StartScene : Scene
+    public class PreGameScene : Scene
     {
         private Texture2D _background;
-        private Texture2D _logo;
-        private Vector2 _logoPosition;
         private float _current;
-        private float _duration = 1f;
-        private Vector2 _logoStart = new Vector2(256, -512);
-        private Vector2 _logoTarget = new Vector2(512, 512) * 0.5f;
-        private bool _done;
+        private readonly float _inputTreshold = 2f;
 
-        public StartScene(ISceneManager sceneManager, ResourceContext resources) : base(sceneManager, resources)
+        public PreGameScene(ISceneManager sceneManager, ResourceContext resources) : base(sceneManager, resources)
         {
         }
 
         public override void Load()
         {
             _background = Resources.Content.Load<Texture2D>("Gfx/title_screen");
-            _logo = Resources.Content.Load<Texture2D>("Gfx/logo");
-            SoundManager.I.PlaySfx("time_travel");
         }
-
-        private float Progress => MathHelper.Clamp(_current / _duration, 0f, 1f);
 
         public override void Update(GameTime gameTime)
         {
             _current += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            _logoPosition = Vector2.Lerp(
-                _logoStart,
-                _logoTarget,
-                MathHelper.SmoothStep(0f, 1f, Progress)
-            );
-
-            if (Progress >= 1f && !_done)
-            {
-                _done = true;
-                SoundManager.I.PlaySfx("attack");
-            }
-
-            if (Progress >= 1)
+            if (_current > _inputTreshold)
             {
                 var keys = Keyboard.GetState();
 
                 if (keys.IsKeyDown(Keys.Enter))
                 {
                     SoundManager.I.PlaySfx("switch");
-                    SceneManager.LoadScene(new PreGameScene(SceneManager, Resources));
+                    SceneManager.LoadScene(new GameScene(SceneManager, Resources));
                 }
             }
         }
@@ -61,24 +40,22 @@ namespace LD47.Scenes
         {
             var sb = Resources.SpriteBatch;
             var fullScreen = new Rectangle(0, 0, 512, 512);
+            var center = new Vector2(512, 512) * 0.5f;
 
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
             sb.Draw(_background, fullScreen, Color.White);
 
-            sb.Draw(
-                _logo,
-                _logoPosition,
-                null,
-                Color.LightBlue,
-                0f,
-                new Vector2(_logo.Width, _logo.Height) * 0.5f,
-                4f,
-                SpriteEffects.None, 0f);
+            DrawStringCenteredWithShadow(
+                "THE KNIGHT IS STUCK IN A TIME LOOP.\n" +
+                "HE MUST DEFEAT HIS PAST SELF IN\n" +
+                "ORDER TO STAY ALIVE.", center + new Vector2(0f, -200), Color.Gray, 0f, 0.5f);
+                
+            DrawStringCenteredWithShadow(
+                "Arrow Keys: MOVE/JUMP/ATTACK", center + new Vector2(0f, 0), Color.Orange, 0f, 0.5f);
 
-            if (Progress >= 1f)
+            if (_current > _inputTreshold)
             {
-                var center = new Vector2(512, 512) * 0.5f;
-                DrawStringCenteredWithShadow("PRESS ENTER", center + new Vector2(0f, 128), Color.White, 0f, 0.5f);
+                DrawStringCenteredWithShadow("PRESS ENTER TO START", center + new Vector2(0f, 200), Color.White, 0f, 0.5f);
             }
 
             sb.End();
